@@ -37,5 +37,6 @@
 }
 
 .add-task-button{
-
+    display: flex;
+    align-items: end;
 }

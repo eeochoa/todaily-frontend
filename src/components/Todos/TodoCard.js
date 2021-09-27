@@ -1,10 +1,10 @@
 import { Card, Avatar, Radio} from 'antd';
-import {CheckSquareTwoTone, DeleteTwoTone} from "@ant-design/icons";
+import {CheckSquareTwoTone, DeleteTwoTone, EditTwoTone} from "@ant-design/icons";
 import React from 'react';
 
 const { Meta } = Card;
 
-export default function ToDoCard(props){
+export default function TodoCard(props){
 
     return (
         <div>
@@ -19,8 +19,9 @@ export default function ToDoCard(props){
             </Card>
             <div>
                 <Radio.Group onChange={props.onClick}>
-                    <Radio.Button title={props.title} id = {props.id} value = "done">{<CheckSquareTwoTone/>}</Radio.Button>
-                    <Radio.Button title={props.title} id = {props.id} value = "delete">{<DeleteTwoTone/>}</Radio.Button>
+                    <Radio.Button title={props.title} id = {props.id} value = "green">{<CheckSquareTwoTone/>}</Radio.Button>
+                    <Radio.Button title={props.title} id = {props.id} value = "red">{<DeleteTwoTone/>}</Radio.Button>
+                    <Radio.Button title={props.title} id = {props.id} value = "edit">{<EditTwoTone/>}</Radio.Button>
                 </Radio.Group>
             </div>
             </div>
