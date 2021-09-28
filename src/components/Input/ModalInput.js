@@ -8,7 +8,7 @@ export default function ModalInput (props) {
     return (
         <Modal
             visible={visible}
-            title="Create a new task"
+            title={props.title}
             okText="Create"
             cancelText="Cancel"
             onCancel={onCancel}

@@ -15,9 +15,11 @@ export default function Todo(){
     const [currentDate, setCurrentDate] = useState(moment().format('DDMMYYYY'));
     const [modalInputVisible, setModalInputVisible] = useState(false);
     const [taskId, setTaskId] = useState();
+    const [modalTitle, setModalTitle] = useState("")
 
     const addTaskButtonClick = () => {
         setTaskId("")
+        setModalTitle("Create a new Task")
         setModalInputVisible(true)
     }
     const handleButtonClick = (modalData) => {
@@ -61,6 +63,7 @@ export default function Todo(){
         console.log("Title: " + e.target.title)
 
         if (e.target.value === "edit") {
+            setModalTitle("Edit Task")
             setModalInputVisible(true)
             console.log("Editing card with ID: "+e.target.id)
             setTaskId(e.target.id);
@@ -98,7 +101,7 @@ export default function Todo(){
             <div className="root">
             <div className='top-container'>
                 <div className='left-top-container'>
-                    <h1>Hello, User. Your ToDaily's for today are: </h1>
+                    <h1>Hello! Your ToDaily's are: </h1>
                 </div>
 
             </div>
@@ -108,7 +111,7 @@ export default function Todo(){
                         <Button className="add-task-button" onClick={addTaskButtonClick} type="primary" ghost>
                            + Add Task
                         </Button>
-                        <ModalInput visible={modalInputVisible} onCreate={handleButtonClick} onCancel={() => {
+                        <ModalInput title={modalTitle} visible={modalInputVisible} onCreate={handleButtonClick} onCancel={() => {
                             setModalInputVisible(false);
                         }}/>
                         <List
