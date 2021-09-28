@@ -10,13 +10,6 @@ export default function TodoItem(props){
     //State tracking if card is loading
     const [loading, isLoading] = useState(false);
     const {id, title, description, value, onClick} = props
-    const [componentId, setComponentId] = useState(id)
-    /*console.log("id: "+componentId)
-    console.log("title: "+title)
-    console.log("description: "+description)
-    console.log("value: "+value)
-    //console.log("onClick: "+onClick)
-*/
     const handleClick = e => {
         console.log("ID: "+e.target.name)
     }

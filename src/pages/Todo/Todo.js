@@ -29,8 +29,8 @@ export default function Todo(){
         let taskIndex = tasks.findIndex((task => task.id === taskId))
         console.log("TASK INDEX = "+taskIndex)
         if(taskIndex !== -1) {
-            let taskCopy = tasks;
-            let taskToMod = [...taskCopy[taskIndex]];
+            let taskCopy = [...tasks];
+            let taskToMod = taskCopy[taskIndex];
             taskToMod.title = modalData.title;
             taskToMod.description = modalData.description;
             taskCopy[taskIndex] = taskToMod;
@@ -66,7 +66,7 @@ export default function Todo(){
             setTaskId(e.target.id);
         } else{
             //find task in tasks array to eliminate
-            const idToDel = e.target.id
+        const idToDel = e.target.id
         const tasksCopy = [...tasks]
         console.log("Deleting ID: " + idToDel)
         for (let i = 0; i < tasks.length; i++) {
