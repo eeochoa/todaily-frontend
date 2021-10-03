@@ -7,7 +7,7 @@ export const NavbarItems = [
         url: '/',
         icon: <BiNotepad />,
         cName: 'nav-text'
-    },
+    }/*,
     {
         title: 'Dashboard',
         url: '/dashboard',
@@ -19,5 +19,5 @@ export const NavbarItems = [
         url: '/logout',
         icon: <BiLogOut />,
         cName: 'nav-text'
-    }
+    }*/
 ]

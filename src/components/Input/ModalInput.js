@@ -9,7 +9,7 @@ export default function ModalInput (props) {
         <Modal
             visible={visible}
             title={props.title}
-            okText="Create"
+            okText="Submit"
             cancelText="Cancel"
             onCancel={onCancel}
             onOk={() => {
@@ -38,7 +38,7 @@ export default function ModalInput (props) {
                     rules={[
                         {
                             required: true,
-                            message: 'Please input the title of collection!',
+                            message: 'Task title missing',
                         },
                     ]}
                 >
@@ -49,34 +49,5 @@ export default function ModalInput (props) {
                 </Form.Item>
             </Form>
         </Modal>
-    );
-};
-
-const CollectionsPage = () => {
-    const [visible, setVisible] = useState(false);
-
-    const onCreate = (values) => {
-        console.log('Received values of form: ', values);
-        setVisible(false);
-    };
-
-    return (
-        <div>
-            <Button
-                type="primary"
-                onClick={() => {
-                    setVisible(true);
-                }}
-            >
-                New Collection
-            </Button>
-            <ModalInput
-                visible={visible}
-                onCreate={onCreate}
-                onCancel={() => {
-                    setVisible(false);
-                }}
-            />
-        </div>
     );
 };

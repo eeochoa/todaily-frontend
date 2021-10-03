@@ -22,14 +22,13 @@ export default function Todo(){
         setModalTitle("Create a new Task")
         setModalInputVisible(true)
     }
-    const handleButtonClick = (modalData) => {
+    const handleModalSubmit = (modalData) => {
         NumberCount(tasksCount + 1);
         setCurrentTime(moment().format('LT'));
         setCurrentDate(moment().format('DDMMYYYY'))
-        console.log(modalData)
 
-        let taskIndex = tasks.findIndex((task => task.id === taskId))
-        console.log("TASK INDEX = "+taskIndex)
+        const taskIndex = tasks.findIndex((task => task.id === taskId))
+        //if Task is already present on the task list, we modify it
         if(taskIndex !== -1) {
             let taskCopy = [...tasks];
             let taskToMod = taskCopy[taskIndex];
@@ -38,7 +37,7 @@ export default function Todo(){
             taskCopy[taskIndex] = taskToMod;
             setTask(taskCopy);
             setModalInputVisible(false)
-        }else {
+        }else { //else, we create a new one
             if (modalData.description === undefined || modalData.description === "") {
                 modalData.description = "No description provided"
             }
@@ -51,45 +50,49 @@ export default function Todo(){
             setTask([...tasks, newTask]);
             console.log(tasksCount);
             console.log(newTask.id)
+            console.log(tasks.map(item =>
+                item
+            ))
             setModalInputVisible(false)
         }
     }
 
-    const handleCardAction = (e) => {
-        setCurrentTime(moment().format('LT'));
-        setCurrentDate(moment().format('DDMMYYYY'))
-        console.log("Card Id: " + e.target.id)
-        console.log("Card Action: " + e.target.value)
-        console.log("Title: " + e.target.title)
+    function handleCardAction (callback)  {
 
-        if (e.target.value === "edit") {
-            setModalTitle("Edit Task")
-            setModalInputVisible(true)
-            console.log("Editing card with ID: "+e.target.id)
-            setTaskId(e.target.id);
-        } else{
-            //find task in tasks array to eliminate
-        const idToDel = e.target.id
-        const tasksCopy = [...tasks]
-        console.log("Deleting ID: " + idToDel)
-        for (let i = 0; i < tasks.length; i++) {
-            if (tasksCopy[i].id === idToDel) {
-                tasksCopy.splice(i, 1)
-                break;
+        if(callback.value != undefined){
+            setCurrentTime(moment().format('LT'));
+            setCurrentDate(moment().format('DDMMYYYY'))
+
+
+            if (callback.value === "edit") {
+                setModalTitle("Edit Task")
+                setModalInputVisible(true)
+                setTaskId(callback.id);
+            } else{
+                //find task in tasks array to mark as done or deleted
+            const idToDel = callback.id
+            const tasksCopy = [...tasks]
+            for (let i = 0; i < tasks.length; i++) {
+                if (tasksCopy[i].id === idToDel) {
+                    tasksCopy.splice(i, 1)
+                    break;
+                }
             }
-        }
 
-        setTask(tasksCopy);
+            setTask(tasksCopy);
 
-        const completedTask = {
-            title: e.target.title,
-            id: e.target.id,
-            time: currentTime,
-            date: currentDate,
-            action: e.target.value
+            const completedTask = {
+                title: callback.title,
+                id: callback.id,
+                time: currentTime,
+                date: currentDate,
+                action: callback.value
+            }
+            setCompletedTasks([...completedTasks, completedTask])
+            }
+        }else{
+            alert("An error has occurred. Please try again");
         }
-        setCompletedTasks([...completedTasks, completedTask])
-    }
     }
 
  /*   useEffect(() => {
@@ -111,7 +114,7 @@ export default function Todo(){
                         <Button className="add-task-button" onClick={addTaskButtonClick} type="primary" ghost>
                            + Add Task
                         </Button>
-                        <ModalInput title={modalTitle} visible={modalInputVisible} onCreate={handleButtonClick} onCancel={() => {
+                        <ModalInput title={modalTitle} visible={modalInputVisible} onCreate={handleModalSubmit} onCancel={() => {
                             setModalInputVisible(false);
                         }}/>
                         <List
@@ -136,6 +139,7 @@ export default function Todo(){
                                 <TimeLineItem
                                     key = {item.id}
                                     text = {item.title}
+                                    //action is passed as color to simplify color-coding timeline task. Except the "edit" value which is handled differently
                                     color = {item.action}
                                     time = {item.time}
                                 />
