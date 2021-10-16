@@ -5,6 +5,6 @@ import { Timeline } from "antd";
 export default function TimeLineItem(props){
 
     return(
-        <Timeline.Item color={props.color}>{props.text} at {props.time}</Timeline.Item>
+        <Timeline.Item color={props.color}>{props.title} at {props.time}</Timeline.Item>
     )
 }

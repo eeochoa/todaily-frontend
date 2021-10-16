@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useReducer, useRef, useCallback } from 'react';
 import './Todo.css'
 import { Timeline, List, Button  } from 'antd';
 import 'antd/dist/antd.css'
@@ -6,8 +6,10 @@ import TimeLineItem from "../../components/TimeLineItem/TimeLineItem";
 import moment from 'moment';
 import TodoCard from "../../components/Todos/TodoCard";
 import ModalInput from "../../components/Input/ModalInput"
+import axios from '../../Utils/axios'
 
 export default function Todo(){
+    const [rawData, setRawData] = useState([]);
     const [tasks, setTask] = useState([]);
     const [tasksCount, NumberCount] = useState(tasks.length+1);
     const [completedTasks, setCompletedTasks] = useState([]);
@@ -15,18 +17,18 @@ export default function Todo(){
     const [currentDate, setCurrentDate] = useState(moment().format('DDMMYYYY'));
     const [modalInputVisible, setModalInputVisible] = useState(false);
     const [taskId, setTaskId] = useState();
-    const [modalTitle, setModalTitle] = useState("")
+    const [modalTitle, setModalTitle] = useState("");
+
 
     const addTaskButtonClick = () => {
         setTaskId("")
+        setCurrentTime(moment().format('LT'));
         setModalTitle("Create a new Task")
         setModalInputVisible(true)
     }
     const handleModalSubmit = (modalData) => {
         NumberCount(tasksCount + 1);
-        setCurrentTime(moment().format('LT'));
         setCurrentDate(moment().format('DDMMYYYY'))
-
         const taskIndex = tasks.findIndex((task => task.id === taskId))
         //if Task is already present on the task list, we modify it
         if(taskIndex !== -1) {
@@ -37,29 +39,47 @@ export default function Todo(){
             taskCopy[taskIndex] = taskToMod;
             setTask(taskCopy);
             setModalInputVisible(false)
+
+            axios.put("/tasks/"+taskToMod.id, taskToMod)
+                .then((response) =>(
+                    console.log(response)
+                    )
+                ).catch((error) => {
+                    console.log(error)
+            })
         }else { //else, we create a new one
             if (modalData.description === undefined || modalData.description === "") {
-                modalData.description = "No description provided"
+                modalData.description = "No notes provided"
             }
+            //Create new task
             const newTask = {
+                id: tasksCount+currentDate,
                 title: modalData.title,
                 description: modalData.description,
-                id: "" + tasksCount + "" + currentDate,
+                status: 'active',
+                time: currentTime,
                 date: currentDate
             }
-            setTask([...tasks, newTask]);
-            console.log(tasksCount);
-            console.log(newTask.id)
-            console.log(tasks.map(item =>
-                item
-            ))
+
+            console.log("TASK: "+newTask.Id)
+            console.log("TASK TITLE: "+newTask.title)
+            console.log("TC+CD: "+tasksCount+currentDate)
+            //Post new task to server
+            axios.post("/tasks/"+newTask.id, newTask)
+                .then((response) =>(
+                        console.log(response)
+                    )
+                ).catch(error =>{
+                    console.log(error)
+            })
+            //setTask([...tasks, newTask]);
             setModalInputVisible(false)
         }
     }
 
     function handleCardAction (callback)  {
 
-        if(callback.value != undefined){
+        if(callback.value !== undefined){
             setCurrentTime(moment().format('LT'));
             setCurrentDate(moment().format('DDMMYYYY'))
 
@@ -82,11 +102,12 @@ export default function Todo(){
             setTask(tasksCopy);
 
             const completedTask = {
-                title: callback.title,
                 id: callback.id,
+                title: callback.title,
+                status: "done",
                 time: currentTime,
                 date: currentDate,
-                action: callback.value
+                action: callback.value,
             }
             setCompletedTasks([...completedTasks, completedTask])
             }
@@ -95,9 +116,28 @@ export default function Todo(){
         }
     }
 
- /*   useEffect(() => {
+    useEffect(() => {
+        async function fetchData() {
+            const request = await axios.get('/tasks')
+            setRawData(request.data)
 
-    }, [tasks])*/
+            console.log(request);
+            return request;
+        }
+        fetchData();
+        /**Assign corresponding task items to arrays based on if they are active or done**/
+        const activeTasks = [];//Active tasks
+        const compTasks = []; //Completed tasks
+        for(let i = 0; i < rawData.length; i++) {
+            if (rawData[i].status === "active") {
+                activeTasks.push(rawData[i]);
+            } else {
+                compTasks.push(rawData[i]);
+            }
+        }
+            setTask(activeTasks);
+            setCompletedTasks(compTasks);
+    }, []);
 
     return(
         <>
@@ -138,11 +178,13 @@ export default function Todo(){
                             {completedTasks.map( (item) => (
                                 <TimeLineItem
                                     key = {item.id}
-                                    text = {item.title}
+                                    title = {item.title}
+                                    description = {item.description}
                                     //action is passed as color to simplify color-coding timeline task. Except the "edit" value which is handled differently
                                     color = {item.action}
                                     time = {item.time}
-                                />
+                                >
+                                </TimeLineItem>
                             ))}
                         </Timeline>
                     </div>
@@ -152,4 +194,3 @@ export default function Todo(){
         </>
     )
 }
-

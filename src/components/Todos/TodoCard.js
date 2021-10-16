@@ -8,12 +8,12 @@ export default function TodoCard(props){
 
     function handleClick(e) {
 
-        const action = {
+        const buttonAction = {
             title: e.target.title,
             id: e.target.id,
             value: e.target.value
         }
-        props.onClick(action)
+        props.onClick(buttonAction)
     }
 
     return (

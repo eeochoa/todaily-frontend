@@ -44,7 +44,7 @@ export default function ModalInput (props) {
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item name="description" label="Description">
+                <Form.Item name="Notes" label="Description">
                     <Input type="textarea" />
                 </Form.Item>
             </Form>
