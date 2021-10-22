@@ -119,7 +119,7 @@ export default function Todo(){
     useEffect(() => {
         async function fetchData() {
             const request = await axios.get('/tasks')
-            setRawData(request.data)
+            setTask(request.data)
 
             console.log(request);
             return request;
